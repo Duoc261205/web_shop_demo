@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop Mẫu — Cửa hàng demo</title>
+  <meta name="description" content="Website mẫu cho shop bán hàng — sẵn để up lên GitHub Pages" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ----------------- Reset cơ bản ----------------- */
+    :root{
+      --bg: #0f1724; /* nền tổng thể (dùng ở vùng tối) */
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0ea5a4; /* màu chủ đạo */
+      --accent-2: #06b6d4;
+      --glass: rgba(255,255,255,0.06);
+      --radius: 12px;
+      --maxw: 1200px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.35);
+      --success: #10b981;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,#f8fafc 0%, #eef2f7 100%);
+      color:#0b1220;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      -webkit-tap-highlight-color: transparent;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+
+    /* ----------------- Header / Nav ----------------- */
+    header{background:transparent;padding:18px 0;position:sticky;top:0;z-index:50}
+    .nav{display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:inline-grid;place-items:center;color:white;font-weight:700}
+    nav ul{display:flex;gap:18px;align-items:center;margin:0;padding:0;list-style:none}
+    .nav a.btn{padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(10,10,10,0.04)}
+    .nav .cart-btn{position:relative}
+    .cart-count{position:absolute;right:-8px;top:-8px;background:var(--accent);color:white;border-radius:999px;padding:2px 6px;font-size:12px}
+
+    /* ----------------- Hero ----------------- */
+    .hero{display:flex;align-items:center;gap:40px;padding:56px 0}
+    .hero .left{flex:1}
+    .hero .right{flex:1}
+    .hero-cta{font-size:38px;line-height:1.03;margin:0 0 12px}
+    .hero-sub{color:var(--muted);margin-bottom:20px}
+    .cta-row{display:flex;gap:12px}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:none;padding:12px 18px;border-radius:12px;cursor:pointer}
+    .btn-outline{background:transparent;border:1px solid rgba(11,18,32,0.06);padding:12px 18px;border-radius:12px;cursor:pointer}
+    .hero-card{background:white;border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+    .hero-image{width:100%;border-radius:12px;display:block}
+
+    /* ----------------- Search & filters ----------------- */
+    .controls{display:flex;gap:12px;margin:28px 0;align-items:center}
+    .search{flex:1;display:flex;align-items:center;background:#fff;border-radius:12px;padding:10px 12px;box-shadow:0 6px 20px rgba(15,23,42,0.06)}
+    .search input{border:0;outline:0;font-size:15px;width:100%}
+    .select{background:white;padding:10px;border-radius:12px;border:1px solid rgba(10,10,10,0.03)}
+
+    /* ----------------- Products grid ----------------- */
+    #products{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+    .card{background:var(--card);border-radius:14px;padding:12px;border:1px solid rgba(11,18,32,0.04);box-shadow:0 6px 18px rgba(12,20,30,0.04);display:flex;flex-direction:column}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+    .card .title{font-weight:600;margin-top:10px}
+    .card .price{margin-top:6px;font-weight:700}
+    .card .actions{display:flex;gap:8px;margin-top:auto}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(14,165,164,0.08);color:var(--accent);display:inline-block}
+
+    /* ----------------- Modal and Cart ----------------- */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{background:white;border-radius:12px;max-width:920px;width:100%;padding:18px}
+    .cart-panel{position:fixed;right:18px;top:18px;width:360px;background:white;border-radius:12px;padding:14px;box-shadow:var(--shadow);display:none;z-index:80}
+    .cart-item{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+    .qty{display:flex;gap:6px;align-items:center}
+
+    /* ----------------- Footer ----------------- */
+    footer{margin-top:36px;padding:36px 0;background:linear-gradient(180deg,#eef2f7 0%, #f8fafc 100%)}
+    .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+    /* ----------------- Responsiveness ----------------- */
+    @media (max-width:1000px){#products{grid-template-columns:repeat(3,1fr)}.hero{flex-direction:column}.hero .right{order:-1}}
+    @media (max-width:760px){#products{grid-template-columns:repeat(2,1fr)}.nav ul{display:none}.cart-panel{width:92vw;right:4vw}}
+    @media (max-width:420px){#products{grid-template-columns:1fr}.hero-cta{font-size:28px}}
+
+    /* Small helpers */
+    .muted{color:var(--muted);font-size:14px}
+    .small{font-size:13px}
+    .center{display:grid;place-items:center}
+  </style>
+</head>
+<body>
+  <header class="container">
+    <div class="nav">
+      <div class="brand">
+        <div class="logo">SB</div>
+        <div>
+          <div style="font-weight:700">ShopBán</div>
+          <div class="small muted">Mẫu demo — sẵn để up</div>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#" class="small">Trang chủ</a></li>
+          <li><a href="#products" class="small">Sản phẩm</a></li>
+          <li><a href="#about" class="small">Giới thiệu</a></li>
+          <li><a href="#contact" class="small">Liên hệ</a></li>
+          <li class="cart-btn"><button id="open-cart" class="nav-btn">🛒 <span id="cart-count" class="cart-count">0</span></button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="left">
+        <h1 class="hero-cta">Shop mẫu — sản phẩm tuyệt vời, giá tốt</h1>
+        <p class="hero-sub">Một mẫu website cửa hàng tĩnh, responsive, dễ chỉnh sửa. Hoàn toàn tương thích để up lên GitHub Pages (index.html ở thư mục gốc).</p>
+        <div class="cta-row">
+          <a href="#products" class="btn-primary">Xem sản phẩm</a>
+          <button class="btn-outline" id="theme-toggle">Chế độ sáng</button>
+        </div>
+
+        <div style="margin-top:18px" class="muted">Bạn có thể đổi tên shop, ảnh, giá ngay trong file <code>index.html</code>.</div>
+      </div>
+      <div class="right">
+        <div class="hero-card">
+          <img class="hero-image" src="https://source.unsplash.com/collection/190727/800x600" alt="Ảnh sản phẩm mẫu">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+            <div>
+              <div style="font-weight:700">Hot Deal: Tai nghe không dây</div>
+              <div class="muted small">Giảm 30% - Chỉ còn 499.000₫</div>
+            </div>
+            <div style="text-align:right">
+              <div class="tag">Free ship</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search">
+        🔍 <input id="search" placeholder="Tìm sản phẩm theo tên..." aria-label="Tìm sản phẩm">
+      </div>
+      <select id="sort" class="select">
+        <option value="default">Sắp xếp: Mặc định</option>
+        <option value="price-asc">Giá: Thấp → Cao</option>
+        <option value="price-desc">Giá: Cao → Thấp</option>
+      </select>
+      <div class="muted small">Tổng <strong id="total-products">0</strong> sản phẩm</div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <section id="products">
+      <!-- Các thẻ sản phẩm sẽ được sinh bằng JS để bạn dễ chỉnh sửa dữ liệu ở mảng `PRODUCTS` -->
+    </section>
+
+    <!-- Empty state -->
+    <div id="empty" style="display:none;text-align:center;margin:40px 0" class="muted">Không tìm thấy sản phẩm phù hợp.</div>
+
+    <!-- About -->
+    <section id="about" style="margin-top:42px">
+      <h3>Về cửa hàng</h3>
+      <p class="muted">Đây là trang demo. Nội dung, hình ảnh, giá cả đều mẫu. Dùng file này để làm cơ sở cho trang GitHub Pages của bạn.</p>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" style="margin-top:22px">
+      <h3>Liên hệ</h3>
+      <p class="muted">Email: <a href="mailto:hello@example.com">hello@example.com</a> • Phone: 0123 456 789</p>
+      <form id="contact-form" style="max-width:520px;margin-top:12px">
+        <div style="display:flex;gap:8px;flex-direction:column">
+          <input placeholder="Họ tên" required style="padding:10px;border-radius:8px;border:1px solid rgba(10,10,10,0.06)">
+          <input placeholder="Email" type="email" required style="padding:10px;border-radius:8px;border:1px solid rgba(10,10,10,0.06)">
+          <textarea placeholder="Nội dung" rows="4" style="padding:10px;border-radius:8px;border:1px solid rgba(10,10,10,0.06)"></textarea>
+          <button class="btn-primary" type="submit">Gửi liên hệ</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Modal (quick view) -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <img id="modal-img" src="" alt="" style="width:320px;height:220px;object-fit:cover;border-radius:10px">
+        <div style="flex:1">
+          <h3 id="modal-title">Tiêu đề</h3>
+          <div id="modal-desc" class="muted small">Mô tả sản phẩm</div>
+          <div style="margin-top:12px;font-weight:700" id="modal-price">0₫</div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="modal-add" class="btn-primary">Thêm vào giỏ</button>
+            <button id="modal-close" class="btn-outline">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart panel -->
+  <aside id="cart" class="cart-panel" aria-label="Giỏ hàng">
+    <h4>Giỏ hàng</h4>
+    <div id="cart-items" style="max-height:360px;overflow:auto;margin-top:8px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <div class="muted">Tổng</div>
+      <div id="cart-total" style="font-weight:700">0₫</div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button id="checkout" class="btn-primary" style="flex:1">Thanh toán</button>
+      <button id="clear-cart" class="btn-outline">Xóa</button>
+    </div>
+  </aside>
+
+  <footer class="container">
+    <div class="footer-grid">
+      <div>
+        <strong>ShopBán</strong>
+        <div class="muted small">Cửa hàng mẫu • Demo GitHub Pages</div>
+      </div>
+      <div>
+        <div><strong>Danh mục</strong></div>
+        <div class="muted small">Điện tử • Thời trang • Phụ kiện • Quà tặng</div>
+      </div>
+      <div>
+        <div><strong>Liên hệ</strong></div>
+        <div class="muted small">Email: hello@example.com</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px" class="muted small">© 2025 Shop Mẫu — Dùng cho mục đích học tập</div>
+  </footer>
+
+  <script>
+    /* ---------- DỮ LIỆU SẢN PHẨM: chỉnh ngay ở mảng này ---------- */
+    const PRODUCTS = [
+      {id:1,name:'Tai nghe Bluetooth X1',price:499000,tag:'Hot',img:'https://source.unsplash.com/collection/190727/500x400?sig=1',desc:'Tai nghe không dây chống ồn, pin 24h.'},
+      {id:2,name:'Loa Bluetooth M10',price:699000,tag:'Bán chạy',img:'https://source.unsplash.com/collection/190727/500x400?sig=2',desc:'Loa di động bass mạnh, pin 12h.'},
+      {id:3,name:'Sạc dự phòng 20.000mAh',price:299000,tag:'Tiện lợi',img:'https://source.unsplash.com/collection/190727/500x400?sig=3',desc:'Sạc nhanh 18W, 2 cổng USB.'},
+      {id:4,name:'Ốp lưng điện thoại da',price:199000,tag:'Phụ kiện',img:'https://source.unsplash.com/collection/190727/500x400?sig=4',desc:'Ốp lưng thời trang, chống sốc.'},
+      {id:5,name:'Đồng hồ thông minh S3',price:1299000,tag:'Smart',img:'https://source.unsplash.com/collection/190727/500x400?sig=5',desc:'Theo dõi sức khỏe, màn hình AMOLED.'},
+      {id:6,name:'Balo du lịch 30L',price:399000,tag:'Phổ biến',img:'https://source.unsplash.com/collection/190727/500x400?sig=6',desc:'Chống nước, nhiều ngăn tiện lợi.'},
+      {id:7,name:'Bàn phím cơ RGB',price:899000,tag:'Gamer',img:'https://source.unsplash.com/collection/190727/500x400?sig=7',desc:'Switch blue, đèn RGB tùy chỉnh.'},
+      {id:8,name:'Chuột không dây M220',price:149000,tag:'Tiết kiệm',img:'https://source.unsplash.com/collection/190727/500x400?sig=8',desc:'Chuột 2.4G hoặc Bluetooth, pin lâu.'}
+    ];
+
+    /* ---------- Tạo DOM cho products ---------- */
+    const productsEl = document.getElementById('products');
+    const totalProductsEl = document.getElementById('total-products');
+
+    function formatVND(n){
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '₫';
+    }
+
+    function renderProducts(list){
+      productsEl.innerHTML = '';
+      if(!list.length){document.getElementById('empty').style.display='block'} else {document.getElementById('empty').style.display='none'}
+      list.forEach(p => {
+        const div = document.createElement('article');
+        div.className = 'card';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <div class="title">${p.name}</div>
+          <div class="muted small">${p.desc}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <div class="price">${formatVND(p.price)}</div>
+            <div class="tag">${p.tag}</div>
+          </div>
+          <div class="actions">
+            <button class="btn-outline" data-id="${p.id}" data-action="quick">Xem nhanh</button>
+            <button class="btn-primary" data-id="${p.id}" data-action="add">Thêm vào giỏ</button>
+          </div>
+        `;
+        productsEl.appendChild(div);
+      });
+      totalProductsEl.textContent = list.length;
+    }
+
+    // Khởi tạo hiển thị
+    renderProducts(PRODUCTS);
+
+    /* ---------- Tìm kiếm, sắp xếp ---------- */
+    const searchInput = document.getElementById('search');
+    const sortSelect = document.getElementById('sort');
+
+    function applyFilters(){
+      let q = searchInput.value.trim().toLowerCase();
+      let arr = PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      if(sortSelect.value === 'price-asc') arr.sort((a,b)=>a.price-b.price);
+      if(sortSelect.value === 'price-desc') arr.sort((a,b)=>b.price-a.price);
+      renderProducts(arr);
+    }
+    searchInput.addEventListener('input', applyFilters);
+    sortSelect.addEventListener('change', applyFilters);
+
+    /* ---------- Modal quick view ---------- */
+    const modalBackdrop = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalPrice = document.getElementById('modal-price');
+    const modalAdd = document.getElementById('modal-add');
+    let currentModalId = null;
+
+    document.body.addEventListener('click', e=>{
+      const action = e.target.dataset.action;
+      const id = e.target.dataset.id;
+      if(action === 'quick'){
+        openQuickView(Number(id));
+      }
+      if(action === 'add'){
+        addToCart(Number(id));
+      }
+    });
+
+    function openQuickView(id){
+      const p = PRODUCTS.find(x=>x.id===id);
+      if(!p) return;
+      currentModalId = id;
+      modalImg.src = p.img;
+      modalImg.alt = p.name;
+      modalTitle.textContent = p.name;
+      modalDesc.textContent = p.desc;
+      modalPrice.textContent = formatVND(p.price);
+      modalBackdrop.style.display = 'flex';
+    }
+
+    document.getElementById('modal-close').addEventListener('click', ()=>{modalBackdrop.style.display='none'});
+    modalBackdrop.addEventListener('click', e=>{ if(e.target === modalBackdrop) modalBackdrop.style.display='none' });
+    modalAdd.addEventListener('click', ()=>{ if(currentModalId) { addToCart(currentModalId); modalBackdrop.style.display='none'; } });
+
+    /* ---------- Giỏ hàng (LocalStorage) ---------- */
+    const CART_KEY = 'shop_sample_cart_v1';
+    function loadCart(){
+      try{const raw = localStorage.getItem(CART_KEY); return raw?JSON.parse(raw):[] }catch(e){return []}
+    }
+    function saveCart(cart){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+
+    let cart = loadCart();
+    const cartCountEl = document.getElementById('cart-count');
+    const cartPanel = document.getElementById('cart');
+    const cartItemsEl = document.getElementById('cart-items');
+    const cartTotalEl = document.getElementById('cart-total');
+
+    function updateCartCount(){
+      const qty = cart.reduce((s,i)=>s+i.qty,0);
+      cartCountEl.textContent = qty;
+    }
+
+    function renderCart(){
+      cartItemsEl.innerHTML = '';
+      if(!cart.length) cartItemsEl.innerHTML = '<div class="muted">Giỏ hàng trống</div>';
+      cart.forEach(item=>{
+        const p = PRODUCTS.find(x=>x.id===item.id);
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" style="width:60px;height:50px;object-fit:cover;border-radius:8px">
+          <div style="flex:1">
+            <div style="font-weight:600">${p.name}</div>
+            <div class="muted small">${formatVND(p.price)}</div>
+          </div>
+          <div class="qty">
+            <button data-id="${item.id}" class="qty-dec">-</button>
+            <div>${item.qty}</div>
+            <button data-id="${item.id}" class="qty-inc">+</button>
+          </div>
+        `;
+        cartItemsEl.appendChild(div);
+      });
+      const total = cart.reduce((s,i)=>s + (PRODUCTS.find(p=>p.id===i.id).price * i.qty),0);
+      cartTotalEl.textContent = formatVND(total);
+      updateCartCount();
+    }
+
+    function addToCart(id,qty=1){
+      const idx = cart.findIndex(i=>i.id===id);
+      if(idx === -1) cart.push({id,qty}); else cart[idx].qty += qty;
+      saveCart(cart);
+      renderCart();
+    }
+
+    document.getElementById('open-cart').addEventListener('click', ()=>{ cartPanel.style.display = cartPanel.style.display === 'block' ? 'none' : 'block'; });
+    document.getElementById('clear-cart').addEventListener('click', ()=>{ cart = []; saveCart(cart); renderCart(); });
+
+    cartItemsEl.addEventListener('click', e=>{
+      if(e.target.classList.contains('qty-inc')){
+        const id = Number(e.target.dataset.id);
+        const it = cart.find(i=>i.id===id); if(it){it.qty++; saveCart(cart); renderCart();}
+      }
+      if(e.target.classList.contains('qty-dec')){
+        const id = Number(e.target.dataset.id);
+        const itIdx = cart.findIndex(i=>i.id===id); if(itIdx!==-1){ cart[itIdx].qty--; if(cart[itIdx].qty<=0) cart.splice(itIdx,1); saveCart(cart); renderCart(); }
+      }
+    });
+
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      if(!cart.length){ alert('Giỏ hàng trống'); return; }
+      // Đây chỉ là demo: bạn có thể chuyển sang trang thanh toán thực tế.
+      alert('Checkout demo — bạn có ' + cart.reduce((s,i)=>s+i.qty,0) + ' sản phẩm.');
+    });
+
+    // Xử lý sự kiện từ renderProducts (nút add) - event delegation
+    document.addEventListener('click', (e)=>{
+      if(e.target.matches('[data-action="add"]')){
+        const id = Number(e.target.dataset.id);
+        addToCart(id);
+      }
+    });
+
+    // Init
+    renderCart();
+
+    // Theme toggle (chỉ minh họa chuyển màu đơn giản)
+    document.getElementById('theme-toggle').addEventListener('click', ()=>{
+      if(document.body.style.background.includes('#0f1724')){
+        document.body.style.background = 'linear-gradient(180deg,#f8fafc 0%, #eef2f7 100%)';
+        document.getElementById('theme-toggle').textContent = 'Chế độ sáng';
+      } else {
+        document.body.style.background = 'linear-gradient(180deg,#0f1724 0%, #071028 100%)';
+        document.body.style.color = '#e6eef6';
+        document.getElementById('theme-toggle').textContent = 'Chế độ tối';
+      }
+    });
+
+    // Contact form (demo) — ngăn submit và hiển thị thông báo
+    document.getElementById('contact-form').addEventListener('submit', e=>{
+      e.preventDefault();
+      alert('Cảm ơn! Tin nhắn của bạn đã được ghi nhận (demo).');
+      e.target.reset();
+    });
+
+    // Lưu ý: nếu lên GitHub Pages dạng "project page" (username.github.io/repo),
+    // mọi đường dẫn tương đối phải đúng. Ở file này chúng ta chỉ dùng đường dẫn tuyệt đối cho ảnh externals (Unsplash)
+
+    /* ---------- Kiểm tra console lỗi (debug helper) ---------- */
+    console.log('Shop demo loaded — bạn có thể chỉnh PRODUCTS và text trong file index.html');
+  </script>
+</body>
+</html>
